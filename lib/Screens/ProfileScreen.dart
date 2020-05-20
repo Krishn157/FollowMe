@@ -1,7 +1,6 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
-import 'package:followMe/Screens/DiscoverScreen.dart';
 import 'package:followMe/Screens/FollowersScreen.dart';
 import 'package:followMe/Screens/FollowingScreen.dart';
 import 'package:followMe/Screens/MyPostsScreen.dart';

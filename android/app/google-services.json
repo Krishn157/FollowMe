@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "188804021431",
+    "firebase_url": "https://followme-a0fcb.firebaseio.com",
+    "project_id": "followme-a0fcb",
+    "storage_bucket": "followme-a0fcb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:188804021431:android:7d4f75db02baa9721ea132",
+        "android_client_info": {
+          "package_name": "com.example.followMe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "188804021431-o052i8faoa9213jqgcskdtvec4vnn672.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkWKPQfa8i73jcOAI4UjJqFkIKA2lpn8s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "188804021431-o052i8faoa9213jqgcskdtvec4vnn672.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

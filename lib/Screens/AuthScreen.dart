@@ -8,6 +8,9 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   bool _isNew = false;
+  String _name;
+  String _email;
+  String _password;
   final _emailFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
   final _form = GlobalKey<FormState>();
@@ -20,6 +23,9 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   void _saveForm() {
+    if (!_form.currentState.validate()) {
+      return;
+    }
     _form.currentState.save();
   }
 
@@ -87,6 +93,9 @@ class _AuthScreenState extends State<AuthScreen> {
                         onFieldSubmitted: (_) {
                           FocusScope.of(context).requestFocus(_emailFocusNode);
                         },
+                        validator: (value) =>
+                            value.isEmpty ? 'Name cannot be null' : null,
+                        onSaved: (value) => _name = value.trim(),
                       ),
                     SizedBox(height: 20.0),
                     TextFormField(
@@ -105,7 +114,14 @@ class _AuthScreenState extends State<AuthScreen> {
                       onFieldSubmitted: (_) {
                         FocusScope.of(context).requestFocus(_passwordFocusNode);
                       },
+                      maxLines: 1,
                       textInputAction: TextInputAction.next,
+                      validator: (value) {
+                        if (value.isEmpty || !value.contains('@')) {
+                          return 'Invalid email';
+                        }
+                      },
+                      onSaved: (value) => _email = value.trim(),
                     ),
                     SizedBox(height: 20.0),
                     TextFormField(
@@ -125,6 +141,12 @@ class _AuthScreenState extends State<AuthScreen> {
                       onFieldSubmitted: (_) {
                         _saveForm();
                       },
+                      validator: (value) {
+                        if (value.isEmpty || value.length < 5) {
+                          return 'Password is too short';
+                        }
+                      },
+                      onSaved: (value) => _password = value.trim(),
                     ),
                     SizedBox(height: 40.0),
                     Container(
@@ -161,7 +183,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   ],
                 )),
           ),
-          SizedBox(height: 15.0),
+          SizedBox(height: 10.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
