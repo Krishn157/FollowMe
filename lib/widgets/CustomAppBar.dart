@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:followMe/providers/AuthService.dart';
+import 'package:provider/provider.dart';
 
 class CustomAppBar extends StatelessWidget {
   final String title;
@@ -19,12 +21,15 @@ class CustomAppBar extends StatelessWidget {
                   fontSize: 40.0)),
           SizedBox(width: 10.0),
           IconButton(
+              tooltip: 'Log Out',
               icon: Icon(
                 Icons.exit_to_app,
                 color: Colors.white,
                 size: 30,
               ),
-              onPressed: () {}),
+              onPressed: () {
+                Provider.of<AuthService>(context, listen: false).logout();
+              }),
         ],
       ),
     );

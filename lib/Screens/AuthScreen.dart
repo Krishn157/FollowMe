@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:followMe/Screens/HomePage.dart';
+import 'package:followMe/models/User.dart';
+import 'package:followMe/models/http_exception.dart';
+import 'package:followMe/providers/AuthService.dart';
+import 'package:followMe/providers/CurrentUser.dart';
+import 'package:provider/provider.dart';
 
 class AuthScreen extends StatefulWidget {
   @override
@@ -22,11 +27,64 @@ class _AuthScreenState extends State<AuthScreen> {
     super.dispose();
   }
 
-  void _saveForm() {
+  var _isLoading = false;
+
+  void _showErrorDialog(String msg) {
+    showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+              title: Text('An Error Occurred !'),
+              content: Text(msg),
+              actions: <Widget>[
+                FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text("Okay"))
+              ],
+            ));
+  }
+
+  Future<void> _saveForm() async {
     if (!_form.currentState.validate()) {
       return;
     }
     _form.currentState.save();
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      if (_isNew) {
+        // Register
+        await Provider.of<AuthService>(context, listen: false)
+            .signup(_email, _password, _name);
+        // String _id = Provider.of<AuthService>(context, listen: false).userId;
+        // await Provider.of<CurrentUser>(context, listen: false)
+        //     .addUser(User(id: _id, name: _name));
+      } else {
+        //login
+        await Provider.of<AuthService>(context, listen: false)
+            .login(_email, _password);
+      }
+    } on HttpException catch (error) {
+      var errorMsg = 'Authentication failed';
+      if (error.toString().contains('EMAIL_EXISTS')) {
+        errorMsg = 'Email already in use !';
+      } else if (error.toString().contains('INVALID_EMAIL')) {
+        errorMsg = 'This is not a valid email address';
+      } else if (error.toString().contains('EMAIL_NOT_FOUND')) {
+        errorMsg = 'Could not find a user with that email';
+      } else if (error.toString().contains('INVALID_PASSWORD')) {
+        errorMsg = 'Invalid Password';
+      }
+      _showErrorDialog(errorMsg);
+    } catch (error) {
+      const errorMsg = 'Could not authenticate. Please try again later.';
+      _showErrorDialog(errorMsg);
+    }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   void _isNewToggle() {
@@ -138,9 +196,6 @@ class _AuthScreenState extends State<AuthScreen> {
                       ),
                       focusNode: _passwordFocusNode,
                       obscureText: true,
-                      onFieldSubmitted: (_) {
-                        _saveForm();
-                      },
                       validator: (value) {
                         if (value.isEmpty || value.length < 5) {
                           return 'Password is too short';
@@ -149,36 +204,39 @@ class _AuthScreenState extends State<AuthScreen> {
                       onSaved: (value) => _password = value.trim(),
                     ),
                     SizedBox(height: 40.0),
-                    Container(
-                      height: 40.0,
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute<void>(
-                              builder: (BuildContext context) {
-                                return MyHomePage();
+                    _isLoading
+                        ? CircularProgressIndicator()
+                        : Container(
+                            height: 40.0,
+                            child: GestureDetector(
+                              onTap: () {
+                                _saveForm();
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute<void>(
+                                //     builder: (BuildContext context) {
+                                //       return MyHomePage();
+                                //     },
+                                //   ),
+                                // );
                               },
-                            ),
-                          );
-                        },
-                        child: Material(
-                          borderRadius: BorderRadius.circular(20.0),
-                          shadowColor: Colors.indigoAccent,
-                          color: Theme.of(context).primaryColor,
-                          elevation: 7.0,
-                          child: Center(
-                            child: Text(
-                              _isNew ? 'REGISTER' : 'LOGIN',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Montserrat'),
+                              child: Material(
+                                borderRadius: BorderRadius.circular(20.0),
+                                shadowColor: Colors.indigoAccent,
+                                color: Theme.of(context).primaryColor,
+                                elevation: 7.0,
+                                child: Center(
+                                  child: Text(
+                                    _isNew ? 'REGISTER' : 'LOGIN',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Montserrat'),
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    ),
                     SizedBox(height: 20.0),
                   ],
                 )),

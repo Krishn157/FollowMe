@@ -31,15 +31,20 @@ class Posts with ChangeNotifier {
     return [..._posts];
   }
 
+  final String authToken;
+  final String userId;
+  Posts(this.authToken, this.userId, this._posts);
+
 //Putting posts in database
   Future<void> addPost(Post post) async {
-    const url = "https://followme-a0fcb.firebaseio.com/allPosts.json";
+    final url =
+        "https://followme-a0fcb.firebaseio.com/allPosts.json?auth=$authToken";
 
     try {
       final res = await http.post(
         url,
         body: json.encode(
-          {'post': post.post},
+          {'post': post.post, 'creatorId': userId},
         ),
       );
       final newPost = Post(post: post.post, id: json.decode(res.body)['name']);
@@ -52,8 +57,11 @@ class Posts with ChangeNotifier {
   }
 
 //Fetch Posts
-  Future<void> fetchAndSetPosts() async {
-    const url = "https://followme-a0fcb.firebaseio.com/allPosts.json";
+  Future<void> fetchAndSetPosts([bool filterByUser = false]) async {
+    final filterString =
+        filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
+    final url =
+        'https://followme-a0fcb.firebaseio.com/allPosts.json?auth=$authToken&$filterString';
     try {
       final res = await http.get(url);
 
@@ -76,7 +84,8 @@ class Posts with ChangeNotifier {
   Future<void> updatePosts(String id, Post newPost) async {
     final postIndex = _posts.indexWhere((post) => post.id == id);
     if (postIndex >= 0) {
-      final url = "https://followme-a0fcb.firebaseio.com/allPosts/$id.json";
+      final url =
+          "https://followme-a0fcb.firebaseio.com/allPosts/$id.json?auth=$authToken";
       await http.patch(url, body: json.encode({'post': newPost.post}));
       _posts[postIndex] = newPost;
       notifyListeners();
@@ -87,7 +96,8 @@ class Posts with ChangeNotifier {
 
   //Delete Posts
   void deletePosts(String id) {
-    final url = "https://followme-a0fcb.firebaseio.com/allPosts/$id.json";
+    final url =
+        "https://followme-a0fcb.firebaseio.com/allPosts/$id.json?auth=$authToken";
     http.delete(url);
     _posts.removeWhere((post) => post.id == id);
     notifyListeners();

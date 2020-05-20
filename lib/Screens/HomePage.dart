@@ -99,6 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
         color: Theme.of(context).primaryColor,
         height: 50,
         backgroundColor: Colors.white,
+        buttonBackgroundColor: Theme.of(context).accentColor,
         index: 1,
         items: <Widget>[
           Icon(Icons.group_add, size: 30),

@@ -22,7 +22,7 @@ class _MyPostsState extends State<MyPosts> {
       _isLoading = true;
     });
     // TODO: implement initState
-    Provider.of<Posts>(context, listen: false).fetchAndSetPosts().then((_) {
+    Provider.of<Posts>(context, listen: false).fetchAndSetPosts(true).then((_) {
       setState(() {
         _isLoading = false;
       });
