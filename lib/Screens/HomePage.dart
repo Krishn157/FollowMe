@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:followMe/models/Post.dart';
+import 'package:followMe/models/User.dart';
+import 'package:followMe/providers/CurrentUser.dart';
 import 'package:followMe/providers/Posts.dart';
 import 'package:followMe/widgets/CustomAppBar.dart';
 import 'package:followMe/widgets/LoadingSpinner.dart';
@@ -26,6 +28,17 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _selectedPageIndex = index;
     });
+  }
+
+  User _user;
+  @override
+  void initState() {
+    // TODO: implement initState
+    Provider.of<CurrentUser>(context, listen: false).getCurrentUser().then((_) {
+      _user = Provider.of<CurrentUser>(context, listen: false).currentUser;
+    });
+
+    super.initState();
   }
 
   var _isLoading = false;
@@ -73,7 +86,11 @@ class _MyHomePageState extends State<MyHomePage> {
                             });
                             Provider.of<Posts>(context, listen: false)
                                 .addPost(
-                              Post(post: myController.text),
+                              Post(
+                                  post: myController.text,
+                                  user: _user.name,
+                                  userdp: _user.dpUrl,
+                                  postDate: DateTime.now()),
                             )
                                 .then((value) {
                               setState(() {

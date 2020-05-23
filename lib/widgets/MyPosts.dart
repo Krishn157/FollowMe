@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:followMe/models/Post.dart';
+import 'package:followMe/models/User.dart';
+import 'package:followMe/providers/CurrentUser.dart';
 import 'package:followMe/widgets/LoadingSpinner.dart';
 import 'package:provider/provider.dart';
 import '../providers/Posts.dart';
@@ -15,6 +17,7 @@ class MyPosts extends StatefulWidget {
 
 class _MyPostsState extends State<MyPosts> {
   var _isLoading = false;
+  User current;
 
   @override
   void initState() {
@@ -22,6 +25,7 @@ class _MyPostsState extends State<MyPosts> {
       _isLoading = true;
     });
     // TODO: implement initState
+
     Provider.of<Posts>(context, listen: false).fetchAndSetPosts(true).then((_) {
       setState(() {
         _isLoading = false;
@@ -34,6 +38,7 @@ class _MyPostsState extends State<MyPosts> {
   final myController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    current = Provider.of<CurrentUser>(context, listen: false).currentUser;
     List<Post> _posts = Provider.of<Posts>(context).posts;
 
     return _isLoading
@@ -53,12 +58,20 @@ class _MyPostsState extends State<MyPosts> {
                       children: <Widget>[
                         Row(
                           children: <Widget>[
-                            Icon(Icons.account_circle),
+                            CircleAvatar(
+                              backgroundImage: _posts[i].userdp != null
+                                  ? NetworkImage(_posts[i].userdp)
+                                  : null,
+                              backgroundColor: Colors.grey,
+                              child: _posts[i].userdp == null
+                                  ? Text(_posts[i].user.substring(0, 1))
+                                  : null,
+                            ),
                             SizedBox(
                               width: 5,
                             ),
                             Text(
-                              _posts[i].user,
+                              current.name,
                               style: TextStyle(fontSize: 20),
                             ),
                           ],
@@ -107,7 +120,10 @@ class _MyPostsState extends State<MyPosts> {
                                                     listen: false)
                                                 .updatePosts(
                                               _posts[i].id,
-                                              Post(post: myController.text),
+                                              Post(
+                                                  post: myController.text,
+                                                  user: current.id,
+                                                  userdp: current.dpUrl),
                                             );
                                             setState(() {
                                               _isLoading = false;

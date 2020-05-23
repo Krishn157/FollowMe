@@ -21,10 +21,10 @@ class MyApp extends StatelessWidget {
           update: (ctx, auth, prevPosts) => Posts(auth.token, auth.userId,
               prevPosts == null ? [] : prevPosts.posts),
         ),
-        // ChangeNotifierProxyProvider<AuthService, CurrentUser>(
-        //   create: null,
-        //   update: (ctx, auth, prev) => CurrentUser(auth.token),
-        // ),
+        ChangeNotifierProxyProvider<AuthService, CurrentUser>(
+          create: null,
+          update: (ctx, auth, prev) => CurrentUser(auth.token, auth.userId),
+        ),
       ],
       child: Consumer<AuthService>(
         builder: (ctx, auth, _) => MaterialApp(

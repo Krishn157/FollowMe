@@ -18,7 +18,7 @@ class AuthService with ChangeNotifier {
   }
 
   String get userId {
-    print(_userId);
+    // print(_userId);
     return _userId;
   }
 
@@ -50,7 +50,10 @@ class AuthService with ChangeNotifier {
       }
       _token = responseData['idToken'];
       _userId = responseData['localId'];
-      _addUser(name);
+      // print(name + "name");
+      if (name != null) {
+        await _addUser(name);
+      }
       _expiryDate = DateTime.now()
           .add(Duration(seconds: int.parse(responseData['expiresIn'])));
       _autoLogOut();
@@ -92,8 +95,11 @@ class AuthService with ChangeNotifier {
         "https://followme-a0fcb.firebaseio.com/allUsers.json?auth=$_token";
 
     try {
-      final res =
-          await http.post(url, body: json.encode({'id': userId, 'name': name}));
+      final res = await http.post(url,
+          body: json.encode({
+            'id': userId,
+            'name': name,
+          }));
       // print(res.body);
     } catch (error) {
       print(error);

@@ -33,6 +33,7 @@ class Posts with ChangeNotifier {
 
   final String authToken;
   final String userId;
+  // final List<String> ids;
   Posts(this.authToken, this.userId, this._posts);
 
 //Putting posts in database
@@ -44,10 +45,20 @@ class Posts with ChangeNotifier {
       final res = await http.post(
         url,
         body: json.encode(
-          {'post': post.post, 'creatorId': userId},
+          {
+            'post': post.post,
+            'user': post.user,
+            'creatorId': userId,
+            'userpic': post.userdp,
+            'postDate': post.postDate.toIso8601String(),
+          },
         ),
       );
-      final newPost = Post(post: post.post, id: json.decode(res.body)['name']);
+      final newPost = Post(
+          post: post.post,
+          user: post.user,
+          id: json.decode(res.body)['name'],
+          postDate: post.postDate);
       _posts.insert(0, newPost);
       notifyListeners();
     } catch (error) {
@@ -67,12 +78,21 @@ class Posts with ChangeNotifier {
 
       final extractedData = json.decode(res.body) as Map<String, dynamic>;
       final List<Post> loadedPosts = [];
-      extractedData.forEach((postId, postData) {
-        loadedPosts.insert(
-          0,
-          Post(id: postId, post: postData["post"]),
-        );
-      });
+
+      if (extractedData != null) {
+        extractedData.forEach((postId, postData) {
+          loadedPosts.insert(
+            0,
+            Post(
+                id: postId,
+                user: postData["user"],
+                post: postData["post"],
+                postDate: DateTime.parse(postData["postDate"]),
+                userdp: postData["userpic"]),
+          );
+        });
+      }
+
       _posts = loadedPosts;
       notifyListeners();
     } catch (error) {
@@ -94,8 +114,21 @@ class Posts with ChangeNotifier {
     }
   }
 
+  //Update Posts userpic
+  Future<void> updatePostPic(String id, String dpurl) async {
+    final postIndex = _posts.indexWhere((post) => post.id == id);
+    if (postIndex >= 0) {
+      final url =
+          "https://followme-a0fcb.firebaseio.com/allPosts/$id.json?auth=$authToken";
+      await http.patch(url, body: json.encode({'userpic': dpurl}));
+      notifyListeners();
+    } else {
+      print('...');
+    }
+  }
+
   //Delete Posts
-  void deletePosts(String id) {
+  void deletePosts(String id) async {
     final url =
         "https://followme-a0fcb.firebaseio.com/allPosts/$id.json?auth=$authToken";
     http.delete(url);

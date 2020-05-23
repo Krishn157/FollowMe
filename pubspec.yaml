@@ -26,7 +26,8 @@ dependencies:
   http: ^0.12.1
   intl: ^0.16.1
   shared_preferences: ^0.5.7+2
-
+  image_picker: ^0.6.6+4
+  firebase_storage: ^3.1.5
   flutter:
     sdk: flutter
 
