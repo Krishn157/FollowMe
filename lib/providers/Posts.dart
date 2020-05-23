@@ -103,6 +103,20 @@ class Posts with ChangeNotifier {
             );
           });
         }
+      } else if (extractedData != null) {
+        extractedData.forEach((postId, postData) {
+          if (userId == postData["creatorId"]) {
+            loadedPosts.insert(
+              0,
+              Post(
+                  id: postId,
+                  user: postData["user"],
+                  post: postData["post"],
+                  postDate: DateTime.parse(postData["postDate"]),
+                  userdp: postData["userpic"]),
+            );
+          }
+        });
       }
       await fetchFollowingList2();
       followingIds2.forEach((element) {

@@ -59,8 +59,7 @@ class _FollowingListState extends State<FollowingList> {
                         trailing: FlatButton(
                           onPressed: () {
                             Provider.of<CurrentUser>(context, listen: false)
-                                .addFollower(_users[i].id, _users[i].name,
-                                    _users[i].dpUrl);
+                                .unfollow(_users[i].dbId);
                           },
                           child: Text(
                             "Unfollow",

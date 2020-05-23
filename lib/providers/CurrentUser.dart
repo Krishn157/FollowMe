@@ -157,6 +157,7 @@ class CurrentUser with ChangeNotifier {
           loadedUsers.insert(
               0,
               User(
+                  dbId: key,
                   id: value["followingId"],
                   name: value["followingName"],
                   dpUrl: value["followingDp"]));
@@ -195,5 +196,14 @@ class CurrentUser with ChangeNotifier {
       print(error);
       throw error;
     }
+  }
+
+  void unfollow(String id) async {
+    final url =
+        'https://followme-a0fcb.firebaseio.com/followList/$id.json?auth=$authToken';
+    http.delete(url);
+    _following.removeWhere((element) => element.dbId == id);
+    print("idhr hai");
+    notifyListeners();
   }
 }
