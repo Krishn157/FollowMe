@@ -61,12 +61,14 @@ class _MyPostsState extends State<MyPosts> {
                             Row(
                               children: <Widget>[
                                 CircleAvatar(
-                                  backgroundImage: _posts[i].userdp != null
-                                      ? NetworkImage(_posts[i].userdp)
-                                      : null,
+                                  backgroundImage:
+                                      NetworkImage(_posts[i].userdp),
                                   backgroundColor: Colors.grey,
-                                  child: _posts[i].userdp == null
-                                      ? Text(_posts[i].user.substring(0, 1))
+                                  child: _posts[i].userdp.isEmpty
+                                      ? Text(
+                                          _posts[i].user.substring(0, 1),
+                                          style: TextStyle(fontSize: 25),
+                                        )
                                       : null,
                                 ),
                                 SizedBox(
@@ -82,7 +84,7 @@ class _MyPostsState extends State<MyPosts> {
                               height: 8,
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(left: 10),
+                              padding: const EdgeInsets.only(left: 50),
                               child: Text(_posts[i].post),
                             ),
                             ButtonBar(

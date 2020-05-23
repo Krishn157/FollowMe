@@ -70,7 +70,7 @@ class CurrentUser with ChangeNotifier {
         .ref()
         .child('user_Dps')
         .child(username + '.jpg');
-    ref.putFile(dp);
+    await ref.putFile(dp).onComplete;
     final dpurl = await ref.getDownloadURL();
     _currentUser.dpUrl = dpurl;
     final url =

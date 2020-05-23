@@ -61,7 +61,10 @@ class _AllPostsState extends State<AllPosts> {
                                         NetworkImage(_posts[i].userdp),
                                     backgroundColor: Colors.grey,
                                     child: _posts[i].userdp.isEmpty
-                                        ? Text(_posts[i].user.substring(0, 1))
+                                        ? Text(
+                                            _posts[i].user.substring(0, 1),
+                                            style: TextStyle(fontSize: 25),
+                                          )
                                         : null,
                                   ),
                                   SizedBox(

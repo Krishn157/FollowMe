@@ -15,6 +15,7 @@ class DisplayPic extends StatefulWidget {
 
 class _DisplayPicState extends State<DisplayPic> {
   File _pickedImage;
+  var _isLoading = false;
   User current;
   @override
   void initState() {
@@ -28,17 +29,21 @@ class _DisplayPicState extends State<DisplayPic> {
         await ImagePicker.pickImage(source: ImageSource.gallery);
 
     print('uploading');
+    setState(() {
+      _isLoading = true;
+    });
     await Provider.of<CurrentUser>(context, listen: false)
         .updateDp(pickedImageFile, current.name, current.dbId);
+    setState(() {
+      _isLoading = false;
+      _pickedImage = pickedImageFile;
+    });
     Provider.of<Posts>(context, listen: false).fetchAndSetPosts(true).then((_) {
       List<Post> _posts = Provider.of<Posts>(context, listen: false).posts;
       _posts.forEach((element) async {
         await Provider.of<Posts>(context, listen: false)
             .updatePostPic(element.id, current.dpUrl);
       });
-    });
-    setState(() {
-      _pickedImage = pickedImageFile;
     });
   }
 
@@ -55,12 +60,14 @@ class _DisplayPicState extends State<DisplayPic> {
           //     : NetworkImage(current.dpUrl),
           backgroundImage: NetworkImage(current.dpUrl),
           backgroundColor: Colors.grey,
-          child: current.dpUrl.isEmpty
-              ? Text(
-                  current.name.substring(0, 1),
-                  style: TextStyle(fontSize: 100),
-                )
-              : null,
+          child: _isLoading
+              ? Center(child: CircularProgressIndicator())
+              : current.dpUrl.isEmpty
+                  ? Text(
+                      current.name.substring(0, 1),
+                      style: TextStyle(fontSize: 100),
+                    )
+                  : null,
           radius: 80,
         ),
         FlatButton.icon(

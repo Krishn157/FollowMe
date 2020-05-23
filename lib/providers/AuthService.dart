@@ -99,6 +99,7 @@ class AuthService with ChangeNotifier {
           body: json.encode({
             'id': userId,
             'name': name,
+            'dp': '',
           }));
       // print(res.body);
     } catch (error) {
