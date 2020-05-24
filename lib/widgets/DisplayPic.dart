@@ -33,16 +33,17 @@ class _DisplayPicState extends State<DisplayPic> {
       _isLoading = true;
     });
     await Provider.of<CurrentUser>(context, listen: false)
-        .updateDp(pickedImageFile, current.name, current.dbId);
-    setState(() {
-      _isLoading = false;
-      _pickedImage = pickedImageFile;
-    });
+        .updateDp(pickedImageFile, current.id, current.dbId);
+
     Provider.of<Posts>(context, listen: false).fetchAndSetPosts(true).then((_) {
       List<Post> _posts = Provider.of<Posts>(context, listen: false).posts;
       _posts.forEach((element) async {
         await Provider.of<Posts>(context, listen: false)
             .updatePostPic(element.id, current.dpUrl);
+      });
+      setState(() {
+        _isLoading = false;
+        _pickedImage = pickedImageFile;
       });
     });
   }

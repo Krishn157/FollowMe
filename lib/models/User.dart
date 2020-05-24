@@ -20,5 +20,5 @@ class User with ChangeNotifier {
       // this.bdate,
       // this.education,
       // this.role,
-      this.dpUrl = ""});
+      this.dpUrl});
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:followMe/Screens/AuthScreen.dart';
 import 'package:followMe/Screens/HomePage.dart';
+import 'package:followMe/models/Post.dart';
 import 'package:followMe/providers/AuthService.dart';
 import 'package:followMe/providers/CurrentUser.dart';
 import 'package:followMe/providers/Posts.dart';

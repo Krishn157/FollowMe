@@ -89,6 +89,10 @@ class Posts with ChangeNotifier {
 
       final extractedData = json.decode(res.body) as Map<String, dynamic>;
       final List<Post> loadedPosts = [];
+      final favurl =
+          "https://followme-a0fcb.firebaseio.com/userFavorites/$userId.json?auth=$authToken";
+      final favres = await http.get(favurl);
+      final favData = json.decode(favres.body);
       if (filterByUser) {
         if (extractedData != null) {
           extractedData.forEach((postId, postData) {
@@ -113,7 +117,9 @@ class Posts with ChangeNotifier {
                   user: postData["user"],
                   post: postData["post"],
                   postDate: DateTime.parse(postData["postDate"]),
-                  userdp: postData["userpic"]),
+                  userdp: postData["userpic"],
+                  isFavorite:
+                      favData == null ? false : favData[postId] ?? false),
             );
           }
         });
@@ -130,7 +136,9 @@ class Posts with ChangeNotifier {
                     user: postData["user"],
                     post: postData["post"],
                     postDate: DateTime.parse(postData["postDate"]),
-                    userdp: postData["userpic"]),
+                    userdp: postData["userpic"],
+                    isFavorite:
+                        favData == null ? false : favData[postId] ?? false),
               );
             }
           });
@@ -161,7 +169,9 @@ class Posts with ChangeNotifier {
   //Update Posts userpic
   Future<void> updatePostPic(String id, String dpurl) async {
     final postIndex = _posts.indexWhere((post) => post.id == id);
+    print(postIndex);
     if (postIndex >= 0) {
+      print("inif");
       final url =
           "https://followme-a0fcb.firebaseio.com/allPosts/$id.json?auth=$authToken";
       await http.patch(url, body: json.encode({'userpic': dpurl}));
