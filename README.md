@@ -1,16 +1,18 @@
-# followMe
+# FollowMe
 
-A new Flutter project.
+A simple social media app built using Flutter framework
+and Firebase realtime database.
 
-## Getting Started
+## APK Link
+https://drive.google.com/file/d/1QetxAce0VK8yWq1Sg6A_ShMWVccOTgV5/view
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+### Video Demo
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+https://user-images.githubusercontent.com/47914919/124632944-6970cb00-dea2-11eb-971c-50ab54e1383a.mp4
+
+
+
+
+
